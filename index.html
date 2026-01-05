@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Tarjeta Digital Épica</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .card-container {
+            background-color: #0f3460;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 1s ease-out;
+        }
+        .card-header {
+            margin-bottom: 20px;
+        }
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #e94560;
+            margin-bottom: 15px;
+            animation: bounceIn 1s ease-out;
+        }
+        .logo-pic {
+            max-width: 80px;
+            max-height: 80px;
+            margin-top: 15px;
+            filter: drop-shadow(0 0 5px rgba(233, 69, 96, 0.5));
+        }
+        h1 {
+            color: #e94560;
+            margin-bottom: 5px;
+            font-size: 2.2em;
+        }
+        h2 {
+            color: #a9a9a9;
+            font-size: 1.1em;
+            margin-top: 0;
+        }
+        .contact-info p {
+            margin: 8px 0;
+            font-size: 0.95em;
+        }
+        .contact-info a {
+            color: #e0e0e0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .contact-info a:hover {
+            color: #e94560;
+        }
+        .buttons {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .btn {
+            background-color: #e94560;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn:hover {
+            background-color: #c93d53;
+            transform: translateY(-3px);
+        }
+        .btn i {
+            margin-right: 10px;
+        }
+        .social-links {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .social-links a {
+            color: #e0e0e0;
+            font-size: 1.8em;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+        .social-links a:hover {
+            color: #e94560;
+            transform: translateY(-3px);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); opacity: 1; }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="card-container">
+        <div class="card-header">
+            <img id="profile-pic" src="" alt="Foto de Perfil" class="profile-pic">
+            <h1 id="full-name"></h1>
+            <h2 id="title-org"></h2>
+            <img id="logo-pic" src="" alt="Logo Empresa" class="logo-pic">
+        </div>
+
+        <div class="buttons">
+            <a id="call-btn" href="#" class="btn"><i class="fas fa-phone"></i> Llamar</a>
+            <a id="email-btn" href="#" class="btn"><i class="fas fa-envelope"></i> Enviar Correo</a>
+            <a id="web-btn" href="#" class="btn"><i class="fas fa-globe"></i> Mi Sitio Web</a>
+        </div>
+
+        <div class="social-links">
+            <a id="linkedin-btn" href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
+            <a id="twitter-btn" href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('data.json')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('profile-pic').src = data.photo;
+                    document.getElementById('full-name').textContent = data.fn;
+                    document.getElementById('title-org').textContent = `${data.title} en ${data.org}`;
+                    document.getElementById('logo-pic').src = data.logo;
+
+                    document.getElementById('call-btn').href = `tel:${data.cell}`;
+                    document.getElementById('email-btn').href = `mailto:${data.email}`;
+                    document.getElementById('web-btn').href = data.url_web;
+                    
+                    document.getElementById('linkedin-btn').href = data.linkedin;
+                    document.getElementById('twitter-btn').href = data.twitter;
+
+                    // Ocultar botones si el dato no existe
+                    if (!data.url_web) document.getElementById('web-btn').style.display = 'none';
+                    if (!data.linkedin) document.getElementById('linkedin-btn').style.display = 'none';
+                    if (!data.twitter) document.getElementById('twitter-btn').style.display = 'none';
+
+                })
+                .catch(error => {
+                    console.error('Error al cargar los datos:', error);
+                    document.body.innerHTML = '<div style="color: red; text-align: center;">Error al cargar la tarjeta. ¡Revisa tu archivo data.json!</div>';
+                });
+        });
+    </script>
+</body>
+</html>
