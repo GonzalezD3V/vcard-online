@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Card - QR Create</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        :root { --neon: #FF6600; --dark: #070E13; }
+        body { background: var(--dark); color: white; font-family: 'Orbitron', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow: hidden; }
+        
+        /* Spinner Tecnológico */
+        #loader { position: fixed; inset: 0; background: var(--dark); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; transition: opacity 0.5s; }
+        .circle { width: 80px; height: 80px; border: 4px solid transparent; border-top: 4px solid var(--neon); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Card Design */
+        .card { width: 320px; padding: 40px; border: 1px solid var(--neon); background: rgba(255,102,0,0.05); backdrop-filter: blur(10px); border-radius: 15px; text-align: center; box-shadow: 0 0 20px rgba(255,102,0,0.2); }
+        .profile-img { width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--neon); box-shadow: 0 0 15px var(--neon); object-fit: cover; }
+        .btn { display: block; margin: 15px 0; padding: 12px; border: 1px solid var(--neon); color: var(--neon); text-decoration: none; font-size: 0.8em; transition: 0.3s; text-transform: uppercase; letter-spacing: 2px; }
+        .btn:hover { background: var(--neon); color: var(--dark); box-shadow: 0 0 20px var(--neon); }
+    </style>
+</head>
+<body>
+    <div id="loader"><div class="circle"></div><p>CARGANDO SISTEMA...</p></div>
+    <div class="card">
+        <img id="photo" src="" class="profile-img">
+        <h1 id="name" style="font-size: 1.5em; margin: 20px 0 5px;"></h1>
+        <p id="title" style="color: var(--neon); font-size: 0.7em; margin-bottom: 30px;"></p>
+        <div id="links"></div>
+    </div>
+    <script>
+        fetch('data.json').then(r => r.json()).then(data => {
+            document.getElementById('name').innerText = data.fn;
+            document.getElementById('title').innerText = `${data.title} @ ${data.org}`;
+            document.getElementById('photo').src = data.photo;
+            const links = document.getElementById('links');
+            const actions = [
+                {label: 'Llamar', url: 'tel:' + data.cell},
+                {label: 'Email', url: 'mailto:' + data.email},
+                {label: 'LinkedIn', url: data.linkedin}
+            ];
+            actions.forEach(a => {
+                if(a.url) links.innerHTML += `<a href="${a.url}" class="btn">${a.label}</a>`;
+            });
+            setTimeout(() => document.getElementById('loader').style.opacity = '0', 800);
+            setTimeout(() => document.getElementById('loader').style.display = 'none', 1300);
+        });
+    </script>
+</body>
+</html>
